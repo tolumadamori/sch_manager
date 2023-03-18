@@ -28,16 +28,16 @@ docker-compose up
 
 To view the documentation and test all the endpoints, open the following page in the browser with the containers running: 
 
-[Open API Documentation](http://localhost:8001/docs/index.html)
+[School Manager Open API Documentation](http://localhost:8001/docs/index.html)
 
 
 
 ## Notes:
 Please note that the following ports must be free in your network:
-    * 8080
-    * 8001
-    * 3306
-    * 3307
+* 8080
+* 8001  
+* 3306
+* 3307
 
 Those ports are bound by docker and are required for the containers to run. 
 
