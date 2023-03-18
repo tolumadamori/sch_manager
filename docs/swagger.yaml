@@ -1,0 +1,445 @@
+basePath: /
+definitions:
+  models.AdminCourseList:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.Course'
+        type: array
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
+  models.AdminStudentList:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.Student'
+        type: array
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
+  models.Course:
+    properties:
+      ID:
+        type: integer
+      course_code:
+        type: string
+      course_name:
+        type: string
+      createdAt:
+        type: string
+      lecturer:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.CourseSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/models.Course'
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
+  models.GenericSuccessResponse:
+    properties:
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
+  models.Student:
+    properties:
+      createdAt:
+        type: string
+      department:
+        type: string
+      email:
+        type: string
+      level:
+        type: string
+      matric_number:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.StudentSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/models.Student'
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
+  models.SwagCourse:
+    properties:
+      ID:
+        type: integer
+      course_code:
+        type: string
+      course_name:
+        type: string
+      lecturer:
+        type: string
+    type: object
+  models.SwagStudent:
+    properties:
+      department:
+        type: string
+      email:
+        type: string
+      level:
+        type: string
+      matric_number:
+        type: integer
+      name:
+        type: string
+    type: object
+  models.SwagUpdateCourse:
+    properties:
+      course_code:
+        type: string
+      course_name:
+        type: string
+      lecturer:
+        type: string
+    type: object
+  models.SwagUpdateStudent:
+    properties:
+      department:
+        type: string
+      email:
+        type: string
+      level:
+        type: string
+      name:
+        type: string
+    type: object
+host: localhost:8001
+info:
+  contact: {}
+  description: A School Management Server
+  title: School Management Server
+  version: "1.0"
+paths:
+  /admin/addcourse/{matric_number}/{ID}:
+    post:
+      description: Assign a single specified course to a student. Student and course
+        are specified as path params.
+      parameters:
+      - description: Matric Number
+        in: path
+        name: matric_number
+        required: true
+        type: string
+      - description: Course ID
+        in: path
+        name: ID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GenericSuccessResponse'
+      summary: Add Course to Student
+      tags:
+      - Admin
+  /admin/listcoursetudents/{ID}:
+    get:
+      description: Returns all the students assigned to a course. The course is specified
+        by ID in the path.
+      parameters:
+      - description: Course ID
+        in: path
+        name: ID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AdminStudentList'
+      summary: Get Course Assignees
+      tags:
+      - Admin
+  /admin/liststudentcourses/{matric_number}:
+    get:
+      description: Returns all the courses assigned to a Student. The student is specified
+        by matric number in the path.
+      parameters:
+      - description: Matric Number
+        in: path
+        name: matric_number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AdminCourseList'
+      summary: Get Student Courses
+      tags:
+      - Admin
+  /admin/removecourse/{matric_number}/{ID}:
+    delete:
+      description: Removes a single specified course from a student. Student and course
+        are specified as path params.
+      parameters:
+      - description: Matric Number
+        in: path
+        name: matric_number
+        required: true
+        type: string
+      - description: Course ID
+        in: path
+        name: ID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GenericSuccessResponse'
+      summary: Remove Course From Student
+      tags:
+      - Admin
+  /admin/updatestudentcourses/{matric_number}:
+    post:
+      description: Assign multiple courses specified by Course ID to a student. Course
+        IDs are passed as a comma delimited array in the request body. The difference
+        between this route and the AddCourse route is that multiple courses can be
+        added at once.
+      parameters:
+      - description: Matric Number
+        in: path
+        name: matric_number
+        required: true
+        type: string
+      - description: Course List
+        in: body
+        name: Course_List
+        required: true
+        schema:
+          items:
+            type: integer
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GenericSuccessResponse'
+      summary: Update Course List
+      tags:
+      - Admin
+  /course:
+    get:
+      description: Returns all the existing courses.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CourseSuccessResponse'
+      summary: Get Courses
+      tags:
+      - Course
+    post:
+      description: Creates a course in the DB. Course Details are passed in the request
+        body.
+      parameters:
+      - description: Course to Create
+        in: body
+        name: course
+        required: true
+        schema:
+          $ref: '#/definitions/models.SwagCourse'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.CourseSuccessResponse'
+      summary: Create Course
+      tags:
+      - Course
+  /course/{ID}:
+    delete:
+      description: Deletes a course. Course to delete is specified by ID in path param.
+      parameters:
+      - description: Course id
+        in: path
+        name: ID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GenericSuccessResponse'
+      summary: Delete Course
+      tags:
+      - Course
+    get:
+      description: Returns a course. Course to return is specified by ID in path Param.
+      parameters:
+      - description: Course ID
+        in: path
+        name: ID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CourseSuccessResponse'
+      summary: Get Course by ID
+      tags:
+      - Course
+    patch:
+      description: Updates a course. Course is specified by ID. Update details are
+        passed in the request body.
+      parameters:
+      - description: Course ID
+        in: path
+        name: ID
+        required: true
+        type: string
+      - description: Update Details
+        in: body
+        name: Updatecourse
+        required: true
+        schema:
+          $ref: '#/definitions/models.SwagUpdateCourse'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CourseSuccessResponse'
+      summary: Update Course
+      tags:
+      - Course
+  /student:
+    get:
+      description: Returns all the existing students.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.StudentSuccessResponse'
+      summary: Get Students
+      tags:
+      - Student
+    post:
+      description: Creates a Student in the DB. Student Details are passed in the
+        request body.
+      parameters:
+      - description: Student to Create
+        in: body
+        name: Student
+        required: true
+        schema:
+          $ref: '#/definitions/models.SwagStudent'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.StudentSuccessResponse'
+      summary: Create Student
+      tags:
+      - Student
+  /student/{matric_number}:
+    delete:
+      description: Deletes a Student. Student to delete is specified by matric number
+        in path param.
+      parameters:
+      - description: Matric Number
+        in: path
+        name: matric_number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GenericSuccessResponse'
+      summary: Delete Student
+      tags:
+      - Student
+    get:
+      description: Returns a Student. Student to return is specified by Matric Number
+        in path Param.
+      parameters:
+      - description: Matric Number
+        in: path
+        name: matric_number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.StudentSuccessResponse'
+      summary: Get Student by ID
+      tags:
+      - Student
+    patch:
+      description: Updates a Student. Student is specified by Matric Number. Update
+        details are passed in the request body. All Fields are not required.
+      parameters:
+      - description: Matric Number
+        in: path
+        name: matric_number
+        required: true
+        type: string
+      - description: Update Details
+        in: body
+        name: UpdateStudent
+        required: true
+        schema:
+          $ref: '#/definitions/models.SwagUpdateStudent'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.StudentSuccessResponse'
+      summary: Update Student
+      tags:
+      - Student
+swagger: "2.0"

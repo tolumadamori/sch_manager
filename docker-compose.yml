@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  sch-manager:
+    build: . #search for Dockerfile
+    container_name: sch-manager
+    volumes:
+      - .:/go/src/sch-manager
+    ports:
+      - "8001:8080"
+    networks:
+      - sch-manager-network
+
+  mysql:
+    image: mysql:latest
+    #    command:
+    #      - '--character-set-server=utf8mb4'
+    restart: unless-stopped
+    tty: true
+    container_name: sch-manager-db
+    ports:
+      - "3307:3306"
+    volumes:
+      - .:/var/lib
+      - ./mysql:/var/lib/mysql
+      - ./mysql-files:/var/lib/mysql-files
+    environment:
+      MYSQL_DATABASE: sch-manager-db
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+    networks:
+      - sch-manager-network
+
+networks:
+  sch-manager-network:
+    external: true 
